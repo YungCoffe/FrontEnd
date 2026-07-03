@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ban Mercados</title>
+
+  <style>
+    :root {
+      /* Mantemos a paleta de cores, mas aplicaremos transparência nos elementos */
+      --roxo-principal: #8a2be2;
+      --branco: #ffffff;
+      --texto: #e0e0e0;
+      --texto-suave: #a0a0a0;
+      --borda: rgba(255, 255, 255, 0.18); /* Borda semi-transparente */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      /* Configuração da imagem de fundo com filtro escuro */
+      background-image: linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.75)), 
+                        url('image_0.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--texto);
+      padding: 24px;
+    }
+
+    .card {
+      /* Alterado para rgba para adicionar transparência (85% opaco) */
+      background: rgba(18, 18, 18, 0.85);
+      
+      /* Efeito de desfoque de fundo (glassmorphism) */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      
+      width: 100%;
+      max-width: 380px;
+      padding: 44px 36px 36px;
+      border-radius: 18px;
+      border: 1px solid var(--borda);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+      animation: subir 0.5s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--roxo-principal), var(--branco));
+    }
+
+    @keyframes subir {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    /* Ícone removido conforme solicitação anterior, mas mantive o espaço */
+    .marca-nome {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--branco);
+      font-weight: 600;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 4px 0 28px;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--branco);
+      letter-spacing: -0.3px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--texto-suave);
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--borda);
+      border-radius: 10px;
+      background: rgba(26, 26, 26, 0.6); /* Inputs também semi-transparentes */
+      font-size: 15px;
+      color: var(--branco);
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--roxo-principal);
+      background: rgba(26, 26, 26, 0.9);
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-principal {
+      background: var(--roxo-principal);
+      color: var(--branco);
+    }
+
+    .btn-principal:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secundario {
+      background: transparent;
+      color: var(--branco);
+      border: 1.5px solid var(--branco);
+      margin-top: 10px;
+    }
+
+    .btn-secundario:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    #TelaCadastro { display: none; }
+    .rodape { text-align: center; margin-top: 18px; font-size: 12px; color: var(--texto-suave); }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="TelaLogin">
+    <div class="marca">
+      <span class="marca-nome">Ban Mercados</span>
+    </div>
+    <h2>Entrar na conta</h2>
+
+    <label for="usuario">Usuário</label>
+    <input type="text" id="usuario" placeholder="Digite seu usuário">
+
+    <label for="Senha">Senha</label>
+    <input type="password" id="Senha" placeholder="Digite sua senha">
+
+    <button class="btn-principal" onclick="VerificarLogin()">Entrar</button>
+    <button class="btn-secundario" onclick="MostrarCadastro()">Criar uma conta</button>
+
+    <p class="rodape">Acesso restrito a usuários cadastrados</p>
+  </div>
+
+  <div class="card" id="TelaCadastro">
+    <div class="marca">
+      <span class="marca-nome">Ban Mercados</span>
+    </div>
+    <h2>Criar cadastro</h2>
+
+    <label for="CADusuario">Novo usuário</label>
+    <input type="text" id="CADusuario" placeholder="Escolha um nome de usuário">
+
+    <label for="CADsenha">Senha</label>
+    <input type="password" id="CADsenha" placeholder="Escolha uma senha">
+
+    <button class="btn-principal" onclick="ConcluirCadastro()">Cadastrar-se</button>
+  </div>
+
+  <script>
+    function MostrarCadastro() {
+        document.getElementById("TelaLogin").style.display = "none";
+        document.getElementById("TelaCadastro").style.display = "block";
+    }
+
+    function VerificarLogin() {
+        let user = document.getElementById("usuario").value;
+        let pass = document.getElementById("Senha").value;
+        if (user == "admin" && pass == "0000") {
+            alert("Login realizado!");
+        } else {
+            alert("Login incorreto!");
+        }
+    }
+
+    function ConcluirCadastro() {
+        let user = document.getElementById("CADusuario").value;
+        let pass = document.getElementById("CADsenha").value;
+        if (user == "" || pass == "") {
+            alert("Por favor, preencha todos os campos!");
+        } else {
+            alert("Cadastro concluído com sucesso!");
+            document.getElementById("CADusuario").value = "";
+            document.getElementById("CADsenha").value = "";
+            document.getElementById("TelaCadastro").style.display = "none";
+            document.getElementById("TelaLogin").style.display = "block";
+        }
+    }
+  </script>
+</body>
+</html>
