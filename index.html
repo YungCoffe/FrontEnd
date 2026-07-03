@@ -41,6 +41,7 @@
     button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
     .btn-principal { background: #8a2be2; color: white; }
     .btn-secundario { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+    
     #TelaCadastro { display: none; }
   </style>
 </head>
@@ -68,47 +69,49 @@
 
   <script>
     function AlternarTela() {
-        let login = document.getElementById("TelaLogin");
-        let cadastro = document.getElementById("TelaCadastro");
-        login.style.display = (login.style.display === "none") ? "block" : "none";
-        cadastro.style.display = (cadastro.style.display === "none") ? "block" : "none";
+        const login = document.getElementById("TelaLogin");
+        const cadastro = document.getElementById("TelaCadastro");
+
+        // Alterna entre block e none de forma explícita
+        if (login.style.display !== "none") {
+            login.style.display = "none";
+            cadastro.style.display = "block";
+        } else {
+            login.style.display = "block";
+            cadastro.style.display = "none";
+        }
     }
 
     function Cadastrar() {
-        let user = document.getElementById("CADusuario").value;
-        let pass = document.getElementById("CADsenha").value;
+        const user = document.getElementById("CADusuario").value.trim();
+        const pass = document.getElementById("CADsenha").value.trim();
 
-        // 1. Verifica campos vazios
         if (!user || !pass) {
             alert("Preencha todos os campos!");
             return;
         }
 
-        // 2. Verifica tamanho da senha
         if (pass.length < 8) {
             alert("A senha deve ter pelo menos 8 dígitos!");
             return;
         }
 
-        // 3. Verifica se usuário já existe
         if (localStorage.getItem(user) !== null) {
-            alert("Este nome de usuário já está em uso! Escolha outro.");
+            alert("Este nome de usuário já existe!");
             return;
         }
 
-        // 4. Salva no LocalStorage
         localStorage.setItem(user, pass);
         alert("Cadastro realizado com sucesso!");
         
-        // Limpa campos e volta para login
         document.getElementById("CADusuario").value = "";
         document.getElementById("CADsenha").value = "";
         AlternarTela();
     }
 
     function Logar() {
-        let user = document.getElementById("usuario").value;
-        let pass = document.getElementById("Senha").value;
+        const user = document.getElementById("usuario").value.trim();
+        const pass = document.getElementById("Senha").value.trim();
 
         if (localStorage.getItem(user) === pass && localStorage.getItem(user) !== null) {
             alert("Bem-vindo, " + user + "!");
