@@ -1,24 +1,18 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FrontEnd</title>
+  <title>Sistema de Login</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 
     body {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Certifique-se de que o arquivo no seu GitHub se chama fundo.jpg */
       background-image: url('fundo.jpg');
       background-size: cover;
       background-position: center;
@@ -26,12 +20,10 @@
     }
 
     .card {
-      /* Estilo Glassmorphism */
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      
       width: 100%;
       max-width: 380px;
       padding: 40px;
@@ -40,94 +32,71 @@
       color: white;
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 25px;
+    h2 { text-align: center; margin-bottom: 25px; }
+    label { display: block; margin-bottom: 5px; font-size: 14px; }
+    input { 
+      width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; 
+      border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: white; 
     }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
+    button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
     .btn-principal { background: #8a2be2; color: white; }
-    .btn-secundario { 
-      background: rgba(255, 255, 255, 0.1); 
-      color: white; 
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
+    .btn-secundario { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
     #TelaCadastro { display: none; }
-    .rodape { text-align: center; margin-top: 20px; font-size: 12px; opacity: 0.7; }
   </style>
 </head>
 <body>
 
   <div class="card" id="TelaLogin">
-    <h2>Login</h2>
+    <h2>Entrar</h2>
     <label>Usuário</label>
     <input type="text" id="usuario" placeholder="Digite seu usuário">
     <label>Senha</label>
     <input type="password" id="Senha" placeholder="Digite sua senha">
-    <button class="btn-principal" onclick="VerificarLogin()">Entrar</button>
-    <button class="btn-secundario" onclick="MostrarCadastro()">Criar conta</button>
-    <p class="rodape">Ban Mercados - Acesso restrito</p>
+    <button class="btn-principal" onclick="Logar()">Entrar</button>
+    <button class="btn-secundario" onclick="AlternarTela()">Criar conta</button>
   </div>
 
   <div class="card" id="TelaCadastro">
-    <h2>Criar cadastro</h2>
+    <h2>Cadastrar</h2>
     <label>Novo usuário</label>
-    <input type="text" id="CADusuario" placeholder="Nome de usuário">
+    <input type="text" id="CADusuario" placeholder="Crie seu nome de usuário">
     <label>Senha</label>
-    <input type="password" id="CADsenha" placeholder="Escolha sua senha">
-    <button class="btn-principal" onclick="ConcluirCadastro()">Cadastrar-se</button>
+    <input type="password" id="CADsenha" placeholder="Crie sua senha">
+    <button class="btn-principal" onclick="Cadastrar()">Finalizar Cadastro</button>
+    <button class="btn-secundario" onclick="AlternarTela()">Voltar</button>
   </div>
 
   <script>
-    function MostrarCadastro() {
-        document.getElementById("TelaLogin").style.display = "none";
-        document.getElementById("TelaCadastro").style.display = "block";
+    function AlternarTela() {
+        let login = document.getElementById("TelaLogin");
+        let cadastro = document.getElementById("TelaCadastro");
+        login.style.display = (login.style.display === "none") ? "block" : "none";
+        cadastro.style.display = (cadastro.style.display === "none") ? "block" : "none";
     }
 
-    function VerificarLogin() {
-        let user = document.getElementById("usuario").value;
-        let pass = document.getElementById("Senha").value;
-        if (user === "admin" && pass === "0000") {
-            alert("Login realizado!");
+    function Cadastrar() {
+        let user = document.getElementById("CADusuario").value;
+        let pass = document.getElementById("CADsenha").value;
+
+        if (user && pass) {
+            // Salva no LocalStorage. Se já existir, sobrescreve o par.
+            localStorage.setItem(user, pass);
+            alert("Cadastro realizado com sucesso!");
+            AlternarTela();
         } else {
-            alert("Login incorreto!");
+            alert("Preencha todos os campos!");
         }
     }
 
-    function ConcluirCadastro() {
-        let user = document.getElementById("CADusuario").value;
-        let pass = document.getElementById("CADsenha").value;
-        if (user === "" || pass === "") {
-            alert("Preencha todos os campos!");
+    function Logar() {
+        let user = document.getElementById("usuario").value;
+        let pass = document.getElementById("Senha").value;
+
+        // Verifica se o usuário existe e se a senha confere
+        if (localStorage.getItem(user) === pass && localStorage.getItem(user) !== null) {
+            alert("Bem-vindo, " + user + "!");
         } else {
-            alert("Cadastro concluído!");
-            location.reload();
+            alert("Usuário ou senha incorretos!");
         }
     }
   </script>
