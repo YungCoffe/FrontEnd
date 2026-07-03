@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Login</title>
+  <title>Sistema de Acesso</title>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
@@ -60,7 +60,7 @@
     <h2>Cadastrar</h2>
     <label>Novo usuário</label>
     <input type="text" id="CADusuario" placeholder="Crie seu nome de usuário">
-    <label>Senha</label>
+    <label>Senha (mínimo 8 dígitos)</label>
     <input type="password" id="CADsenha" placeholder="Crie sua senha">
     <button class="btn-principal" onclick="Cadastrar()">Finalizar Cadastro</button>
     <button class="btn-secundario" onclick="AlternarTela()">Voltar</button>
@@ -78,21 +78,38 @@
         let user = document.getElementById("CADusuario").value;
         let pass = document.getElementById("CADsenha").value;
 
-        if (user && pass) {
-            // Salva no LocalStorage. Se já existir, sobrescreve o par.
-            localStorage.setItem(user, pass);
-            alert("Cadastro realizado com sucesso!");
-            AlternarTela();
-        } else {
+        // 1. Verifica campos vazios
+        if (!user || !pass) {
             alert("Preencha todos os campos!");
+            return;
         }
+
+        // 2. Verifica tamanho da senha
+        if (pass.length < 8) {
+            alert("A senha deve ter pelo menos 8 dígitos!");
+            return;
+        }
+
+        // 3. Verifica se usuário já existe
+        if (localStorage.getItem(user) !== null) {
+            alert("Este nome de usuário já está em uso! Escolha outro.");
+            return;
+        }
+
+        // 4. Salva no LocalStorage
+        localStorage.setItem(user, pass);
+        alert("Cadastro realizado com sucesso!");
+        
+        // Limpa campos e volta para login
+        document.getElementById("CADusuario").value = "";
+        document.getElementById("CADsenha").value = "";
+        AlternarTela();
     }
 
     function Logar() {
         let user = document.getElementById("usuario").value;
         let pass = document.getElementById("Senha").value;
 
-        // Verifica se o usuário existe e se a senha confere
         if (localStorage.getItem(user) === pass && localStorage.getItem(user) !== null) {
             alert("Bem-vindo, " + user + "!");
         } else {
