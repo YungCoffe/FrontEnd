@@ -38,15 +38,23 @@
       width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; 
       border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: white; 
     }
-    button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    input::placeholder { color: rgba(255, 255, 255, 0.5); }
+    button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.85; }
     .btn-principal { background: #8a2be2; color: white; }
     .btn-secundario { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .btn-sair { background: #e74c3c; color: white; }
     
-    #TelaCadastro { display: none; }
+    #TelaCadastro, #TelaLogado { display: none; }
+
+    .info-usuario { text-align: center; margin-bottom: 20px; }
+    .info-usuario p { font-size: 18px; opacity: 0.9; }
+    .info-usuario h3 { font-size: 28px; margin-top: 10px; font-weight: 600; }
   </style>
 </head>
 <body>
 
+  <!-- Tela de Login -->
   <div class="card" id="TelaLogin">
     <h2>Entrar</h2>
     <label>Usuário</label>
@@ -57,6 +65,7 @@
     <button class="btn-secundario" onclick="AlternarTela()">Criar conta</button>
   </div>
 
+  <!-- Tela de Cadastro -->
   <div class="card" id="TelaCadastro">
     <h2>Cadastrar</h2>
     <label>Novo usuário</label>
@@ -67,57 +76,127 @@
     <button class="btn-secundario" onclick="AlternarTela()">Voltar</button>
   </div>
 
+  <!-- Tela de Usuário Logado -->
+  <div class="card" id="TelaLogado">
+    <h2>Bem-vindo!</h2>
+    <div class="info-usuario">
+      <p>Você está logado como</p>
+      <h3 id="nomeUsuarioLogado">Usuário</h3>
+    </div>
+    <button class="btn-sair" onclick="Sair()">Sair da Conta</button>
+  </div>
+
   <script>
+    // Chave para armazenar o usuário logado no sessionStorage
+    const CHAVE_USUARIO_LOGADO = "usuarioLogado";
+
+    // ─── Ao carregar a página, verifica se já está logado ───
+    window.onload = function() {
+      const usuarioLogado = localStorage.getItem(CHAVE_USUARIO_LOGADO);
+      if (usuarioLogado) {
+        MostrarTelaLogado(usuarioLogado);
+      }
+    };
+
+    // ─── Alternar entre Login e Cadastro ───
     function AlternarTela() {
-        const login = document.getElementById("TelaLogin");
-        const cadastro = document.getElementById("TelaCadastro");
+      const login = document.getElementById("TelaLogin");
+      const cadastro = document.getElementById("TelaCadastro");
 
-        // Alterna entre block e none de forma explícita
-        if (login.style.display !== "none") {
-            login.style.display = "none";
-            cadastro.style.display = "block";
-        } else {
-            login.style.display = "block";
-            cadastro.style.display = "none";
-        }
+      if (login.style.display !== "none") {
+        login.style.display = "none";
+        cadastro.style.display = "block";
+      } else {
+        login.style.display = "block";
+        cadastro.style.display = "none";
+      }
     }
 
+    // ─── Cadastrar novo usuário ───
     function Cadastrar() {
-        const user = document.getElementById("CADusuario").value.trim();
-        const pass = document.getElementById("CADsenha").value.trim();
+      const user = document.getElementById("CADusuario").value.trim();
+      const pass = document.getElementById("CADsenha").value.trim();
 
-        if (!user || !pass) {
-            alert("Preencha todos os campos!");
-            return;
-        }
+      if (!user || !pass) {
+        alert("Preencha todos os campos!");
+        return;
+      }
 
-        if (pass.length < 8) {
-            alert("A senha deve ter pelo menos 8 dígitos!");
-            return;
-        }
+      if (pass.length < 8) {
+        alert("A senha deve ter pelo menos 8 dígitos!");
+        return;
+      }
 
-        if (localStorage.getItem(user) !== null) {
-            alert("Este nome de usuário já existe!");
-            return;
-        }
+      // Verifica se já existe usuário com esse nome
+      if (localStorage.getItem(user) !== null) {
+        alert("Este nome de usuário já existe! Escolha outro.");
+        return;
+      }
 
-        localStorage.setItem(user, pass);
-        alert("Cadastro realizado com sucesso!");
-        
-        document.getElementById("CADusuario").value = "";
-        document.getElementById("CADsenha").value = "";
-        AlternarTela();
+      // Salva no localStorage (chave = nome do usuário, valor = senha)
+      localStorage.setItem(user, pass);
+      alert("Cadastro realizado com sucesso! Agora você pode fazer login.");
+
+      // Limpa os campos
+      document.getElementById("CADusuario").value = "";
+      document.getElementById("CADsenha").value = "";
+      
+      // Volta para tela de login
+      AlternarTela();
     }
 
+    // ─── Fazer Login ───
     function Logar() {
-        const user = document.getElementById("usuario").value.trim();
-        const pass = document.getElementById("Senha").value.trim();
+      const user = document.getElementById("usuario").value.trim();
+      const pass = document.getElementById("Senha").value.trim();
 
-        if (localStorage.getItem(user) === pass && localStorage.getItem(user) !== null) {
-            alert("Bem-vindo, " + user + "!");
-        } else {
-            alert("Usuário ou senha incorretos!");
-        }
+      if (!user || !pass) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      // Verifica se usuário existe e senha está correta
+      const senhaArmazenada = localStorage.getItem(user);
+
+      if (senhaArmazenada === null) {
+        alert("Usuário não encontrado!");
+        return;
+      }
+
+      if (senhaArmazenada !== pass) {
+        alert("Senha incorreta!");
+        return;
+      }
+
+      // Login bem-sucedido: salva no localStorage
+      localStorage.setItem(CHAVE_USUARIO_LOGADO, user);
+      
+      // Limpa os campos
+      document.getElementById("usuario").value = "";
+      document.getElementById("Senha").value = "";
+
+      // Mostra tela de logado
+      MostrarTelaLogado(user);
+    }
+
+    // ─── Mostrar tela de usuário logado ───
+    function MostrarTelaLogado(nomeUsuario) {
+      document.getElementById("TelaLogin").style.display = "none";
+      document.getElementById("TelaCadastro").style.display = "none";
+      document.getElementById("TelaLogado").style.display = "block";
+      document.getElementById("nomeUsuarioLogado").textContent = nomeUsuario;
+    }
+
+    // ─── Sair da conta ───
+    function Sair() {
+      // Remove o usuário logado do localStorage
+      localStorage.removeItem(CHAVE_USUARIO_LOGADO);
+      
+      // Volta para tela de login
+      document.getElementById("TelaLogado").style.display = "none";
+      document.getElementById("TelaLogin").style.display = "block";
+      
+      alert("Você saiu da conta.");
     }
   </script>
 </body>
